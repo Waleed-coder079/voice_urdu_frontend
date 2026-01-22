@@ -6,24 +6,43 @@ import os
 import base64
 import io
 import logging
-from pydub import AudioSegment  # pip install pydub
+from pydub import AudioSegment
 
 from api.runpod_client import voice_to_voice_sync
 
-app = FastAPI()
+# -------------------------
+# Logging
+# -------------------------
 logging.basicConfig(level=logging.INFO)
 
 # -------------------------
-# Serve static files (Vercel serverless path)
+# Base directory (project root) for Vercel serverless
 # -------------------------
-app.mount("/static", StaticFiles(directory="../static"), name="static")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # project root
 
 # -------------------------
-# Serve frontend HTML
+# FastAPI app
 # -------------------------
+app = FastAPI()
+
+# -------------------------
+# Serve static files
+# -------------------------
+static_path = os.path.join(BASE_DIR, "static")
+if not os.path.exists(static_path):
+    logging.warning(f"Static folder not found at {static_path}")
+app.mount("/static", StaticFiles(directory=static_path), name="static")
+
+# -------------------------
+# Serve index.html
+# -------------------------
+index_file = os.path.join(static_path, "index.html")
 @app.get("/")
 async def index():
-    return FileResponse(os.path.join("../static", "index.html"))
+    if not os.path.exists(index_file):
+        logging.error(f"index.html not found at {index_file}")
+        return {"error": "index.html not found"}
+    return FileResponse(index_file)
 
 # -------------------------
 # Request schema
@@ -35,12 +54,16 @@ class AudioIn(BaseModel):
 # Convert browser audio → WAV
 # -------------------------
 def convert_to_wav(audio_b64: str, sample_rate=16000) -> bytes:
-    audio_bytes = base64.b64decode(audio_b64)
-    audio = AudioSegment.from_file(io.BytesIO(audio_bytes))
-    audio = audio.set_channels(1).set_frame_rate(sample_rate)
-    out = io.BytesIO()
-    audio.export(out, format="wav")
-    return out.getvalue()
+    try:
+        audio_bytes = base64.b64decode(audio_b64)
+        audio = AudioSegment.from_file(io.BytesIO(audio_bytes))
+        audio = audio.set_channels(1).set_frame_rate(sample_rate)
+        out = io.BytesIO()
+        audio.export(out, format="wav")
+        return out.getvalue()
+    except Exception as e:
+        logging.error(f"Error converting audio to WAV: {e}")
+        raise RuntimeError("Audio conversion failed. Ensure ffmpeg is available.")
 
 # -------------------------
 # Voice-to-Voice API
@@ -52,7 +75,7 @@ async def voice_to_voice(data: AudioIn):
         wav_bytes = convert_to_wav(data.audio_b64)
         wav_b64 = base64.b64encode(wav_bytes).decode("utf-8")
 
-        # 2️⃣ Call unified RunPod endpoint
+        # 2️⃣ Call RunPod API
         result = voice_to_voice_sync(wav_b64)
 
         if "audio_b64" not in result:
