@@ -1,0 +1,104 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1d2671, #c33764);
+    color: #333;
+}
+
+/* Main card */
+.container {
+    background: #ffffff;
+    padding: 35px 30px 40px;
+    border-radius: 14px;
+    width: 420px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-size: 1.9rem;
+    margin-bottom: 25px;
+    color: #1d2671;
+}
+
+/* Record button */
+button {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #1d2671, #c33764);
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Status text */
+#status {
+    margin-top: 20px;
+    min-height: 24px;
+    font-size: 1rem;
+    color: #555;
+}
+
+/* AI response text */
+#aiText {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* Audio player */
+audio {
+    margin-top: 25px;
+    width: 100%;
+    outline: none;
+    border-radius: 8px;
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 25px;
+    }
+
+    button {
+        width: 150px;
+        height: 150px;
+        font-size: 16px;
+    }
+}

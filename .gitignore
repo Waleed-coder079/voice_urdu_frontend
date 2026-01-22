@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyz
+*.env
+*.venv
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+logs/
+*.out
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Model / cache files
+*.pt
+*.bin
+*.ckpt
+*.safetensors
+*.model
+__models__/
+cache/
+cache_*
+
+# KB / data
+*.txt
+.cache.json
+.KB.json
+*.csv
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Audio outputs
+*.wav
+*.mp3
+
+# Temporary files
+*.tmp
+*.temp
+.vercel
