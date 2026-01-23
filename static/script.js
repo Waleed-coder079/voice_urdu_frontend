@@ -85,6 +85,7 @@ recordBtn.addEventListener("click", async () => {
                         }
 
                         const data = await response.json();
+                        console.log("Received audio_b64 length:", data.audio_b64.length);
 
                         // Handle single audio_b64 field from older model
                         if (data.audio_b64) {
